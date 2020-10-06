@@ -1,0 +1,11 @@
+name: LuckyBlock
+main: io.github.tkdkid1000.Main
+version: 1.0.0
+api-version: 1.16
+author: TKDKid1000
+website: tkdkid1000.github.io
+commands:
+  luckyblock:
+    description: Give lucky blocks to you or a player
+    usage: /luckyblock [player] [amount]
+    permission: luckyblock.give
