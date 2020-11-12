@@ -17,9 +17,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class LuckyBlock implements Listener, CommandExecutor {
 	// lucky block give command
@@ -33,6 +36,7 @@ public class LuckyBlock implements Listener, CommandExecutor {
                 ItemStack item = new ItemStack(Material.SPONGE);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.YELLOW + "Lucky Block");
+                item.setItemMeta(meta);
                 player.getInventory().addItem(item);
             }
             // run if 1 argument provided
@@ -42,6 +46,7 @@ public class LuckyBlock implements Listener, CommandExecutor {
                 ItemStack item = new ItemStack(Material.SPONGE);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.YELLOW + "Lucky Block");
+                item.setItemMeta(meta);
                 target.getInventory().addItem(item);
             }
             // run if 2 arguments provided
@@ -52,6 +57,7 @@ public class LuckyBlock implements Listener, CommandExecutor {
                 ItemStack item = new ItemStack(Material.SPONGE, amount);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(ChatColor.YELLOW + "Lucky Block");
+                item.setItemMeta(meta);
                 target.getInventory().addItem(item);
             }
         }
@@ -59,18 +65,17 @@ public class LuckyBlock implements Listener, CommandExecutor {
     }
 	// define event
 	@EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        Action action = event.getAction();
+    public void onBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        Block block = event.getClickedBlock();
+        Block block = event.getBlock();
         World world = player.getWorld();
         
         // get action to choose if block is opened, or custom item used
         // lucky block
-        if (action.equals(Action.LEFT_CLICK_BLOCK)) {
             if (block.getType().equals(Material.SPONGE)) {
+                event.setCancelled(true);
             	Random rand = new Random();
-            	int luckyblocktype = rand.nextInt(12);
+            	int luckyblocktype = rand.nextInt(13);
             	// all possible outcomes of lucky block
             	// luckyblock type 0, zombie summoning
             	if (luckyblocktype == 0) {
@@ -136,7 +141,6 @@ public class LuckyBlock implements Listener, CommandExecutor {
             	}
             	// luckyblock type 9, beacon
             	if (luckyblocktype == 9) {
-            		block.setType(Material.BEDROCK);
             		Location loc = block.getLocation();
             		loc.add(0, 0, 0).getBlock().setType(Material.BEACON);
             		loc = block.getLocation();
@@ -166,7 +170,9 @@ public class LuckyBlock implements Listener, CommandExecutor {
             		player.getInventory().addItem(water);
             		Location loc = block.getLocation().add(0, 100, 0);
             		player.teleport(loc);
+            		block.setType(Material.AIR);
             	}
+            	// luckyblock type 11, treasure compass
             	if (luckyblocktype == 11) {
             		rand = new Random();
             		double randx = rand.nextInt(50);
@@ -184,18 +190,95 @@ public class LuckyBlock implements Listener, CommandExecutor {
                     player.getInventory().addItem(compass);
                     player.sendMessage(ChatColor.RED + "Go to Y=10 then follow your compass to find the treasure.");
                     player.setCompassTarget(loc);
+                    block.setType(Material.AIR);
+            	}
+            	// luckyblock type 12, lightning rod
+            	if (luckyblocktype == 12) {
+            		ItemStack lightningrod = new ItemStack(Material.BLAZE_ROD, 3);
+            		ItemMeta lightningrodmeta = lightningrod.getItemMeta();
+            		lightningrodmeta.setDisplayName(ChatColor.YELLOW + "Lightning Rod");
+            		lightningrod.setItemMeta(lightningrodmeta);
+            		player.getInventory().addItem(lightningrod);
+            		player.sendMessage(ChatColor.YELLOW + "Right click to shoot a lightning bolt");
+            		block.setType(Material.AIR);
+            	}
+            	if (luckyblocktype == 13) {
+            		Location loc = block.getLocation();
+            		for (int i=0; i<5; i++) {
+                		loc.add(1, i, 1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(1, i, -1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(1, i, 0).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(-1, i, 1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(-1, i, -1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(-1, i, 0).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(0, i, 1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(0, i, -1).getBlock().setType(Material.IRON_BLOCK);
+            		}
+            		loc = block.getLocation().add(0, 5, 0);
+            		block.setType(Material.LAVA);
+            		player.sendMessage(ChatColor.GOLD + "Stuck now. Might as well /suicide.");
+            	}
+            	if (luckyblocktype == 14) {
+            		Location loc = block.getLocation();
+            		for (int i=0; i<5; i++) {
+                		loc.add(1, i, 1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(1, i, -1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(1, i, 0).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(-1, i, 1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(-1, i, -1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(-1, i, 0).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(0, i, 1).getBlock().setType(Material.IRON_BLOCK);
+                		loc = block.getLocation();
+                		loc.add(0, i, -1).getBlock().setType(Material.IRON_BLOCK);
+            		}
+            		world.spawnEntity(block.getLocation().add(0, 5, 0), EntityType.PRIMED_TNT);
+            		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 255));
+            		block.setType(Material.AIR);
+            	}
+            	if (luckyblocktype == 15) {
             		
             	}
             } else {
                 return;
             }
-        }
+	}
+	@EventHandler
+	public void onInteract(PlayerInteractEvent event) {
+		Action action = event.getAction();
+		Player player = event.getPlayer();
+		World world = player.getWorld();
         // custom items
         if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
         	ItemStack helditem = player.getPlayer().getInventory().getItemInMainHand();
+        	ItemMeta heldmeta = helditem.getItemMeta();
         	if (helditem.getType() == Material.FIRE_CHARGE) {
                 player.launchProjectile(Fireball.class);
                 player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
+        	}
+        	if (helditem.getType() == Material.BLAZE_ROD) {
+        		ItemStack lightningrod = new ItemStack(Material.BLAZE_ROD);
+        		ItemMeta lightningrodmeta = lightningrod.getItemMeta();
+        		lightningrodmeta.setDisplayName(ChatColor.YELLOW + "Lightning Rod");
+        		lightningrod.setItemMeta(lightningrodmeta);
+        		if (heldmeta.equals(lightningrodmeta)) {
+                    Block targetblock = player.getTargetBlock(null, 100);
+                    Location targetloc = targetblock.getLocation();
+                    world.spawnEntity(targetloc, EntityType.PRIMED_TNT);
+                    player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
+        		}
         	}
         }
     }
