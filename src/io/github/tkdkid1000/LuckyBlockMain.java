@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-public class Main extends JavaPlugin {
+public class LuckyBlockMain extends JavaPlugin {
     @Override
     public void onEnable() {
     	// enable events and commands
